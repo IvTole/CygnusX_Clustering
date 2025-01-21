@@ -19,3 +19,9 @@ from spectral_cube import SpectralCube
 
 import math
 import scipy
+
+# External modules
+from module_utils import rms, smooth, cube_mom0, cube_mom8
+
+
+
