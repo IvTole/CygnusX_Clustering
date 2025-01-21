@@ -1,5 +1,16 @@
+# Libraries
+
+# Standard
 import numpy as np
 import scipy
+import math
+
+# Astropy
+from astropy.io import fits
+from astropy.wcs import WCS
+from astropy import units as u
+
+# Data Cube
 from spectral_cube import SpectralCube
 
 def rms(image):
@@ -62,6 +73,6 @@ def cube_mom0(cube,velmin,velmax):
         moment(SpectralCube 2d): Moment 0 image (2d) of the data cube.
     """
 
-    cube_slab = cube.spectral_slab(velmin *u.km / u.s, velmax *u.km / u.s)
+    cube_slab = cube.spectral_slab(velmin*u.km/u.s, velmax*u.km/u.s)
     moment = cube_slab.with_spectral_unit(u.km/u.s).moment(order=0)
     return moment
