@@ -21,7 +21,13 @@ import math
 import scipy
 
 # External modules
+from module_data_path import cube_data_path, plot_data_path, fits_data_path
 from module_utils import rms, smooth, cube_mom0, cube_mom8
 
+# Data import
 
 
+# plots and fits files mainpath
+data_path = cube_data_path()
+fits_path = fits_data_path()
+plots_path = plot_data_path()
