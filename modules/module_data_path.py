@@ -12,7 +12,7 @@ def cube_data_path() -> Path:
     for folder in (cwd, cwd / "..", cwd / ".." / ".."):
         data_folder = folder / "data"
         if data_folder.exists() and data_folder.is_dir():
-            print("Data directory found in ", data_folder)
+            print("Data (main) directory found in ", data_folder)
             return data_folder
         else:
             raise Exception("Data not found")
@@ -28,7 +28,7 @@ def plot_data_path() -> Path:
     for folder in (cwd, cwd / "..", cwd / ".." / ".."):
         data_folder = folder / "plots"
         if data_folder.exists() and data_folder.is_dir():
-            print("Data directory found in ", data_folder)
+            print("Plot directory found in ", data_folder)
             return data_folder
         else:
             raise Exception("Plots directory not found")
@@ -44,7 +44,7 @@ def fits_data_path() -> Path:
     for folder in (cwd, cwd / "..", cwd / ".." / ".."):
         data_folder = folder / "fitsfiles"
         if data_folder.exists() and data_folder.is_dir():
-            print("Data directory found in ", data_folder)
+            print("Fits directory found in ", data_folder)
             return data_folder
         else:
             raise Exception("Fits files directory not found")

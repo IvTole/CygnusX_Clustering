@@ -4,6 +4,7 @@
 import numpy as np
 import scipy
 import math
+import os
 
 # Astropy
 from astropy.io import fits
@@ -76,3 +77,15 @@ def cube_mom0(cube,velmin,velmax):
     cube_slab = cube.spectral_slab(velmin*u.km/u.s, velmax*u.km/u.s)
     moment = cube_slab.with_spectral_unit(u.km/u.s).moment(order=0)
     return moment
+
+def cube_smoothing(data_path, output_path, source_prefix, emission_prefix, kernel_px=1, write_fits=False):
+    hdu = fits.open(data_path)[0]
+    for v in range(0,hdu.data.shape[0]):
+        hdu.data[v,:,:] = smooth(hdu.data[v,:,:],kern_px=kernel_px)
+    print('Smoothing done for:', data_path)
+    
+    if write_fits:
+        print('Writing new cube in following path:', output_path)
+        hdu.writeto(os.path.join(output_path,source_prefix+'_'+emission_prefix+'_smoothed.fits'),
+                overwrite = True)
+    
