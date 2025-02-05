@@ -94,10 +94,10 @@ def cube_mom0(cube_path,velmin,velmax,output_path,write_fits=False):
         
     return moment
 
-def cube_smoothing(data_path, output_path, prefix_source, prefix_emission, kernel_px=1, write_fits=False):
+def cube_smoothing(data_path, output_path, prefix_source, prefix_emission, efficiency=1.0, kernel_px=1, write_fits=False):
     hdu = fits.open(data_path)[0]
     for v in range(0,hdu.data.shape[0]):
-        hdu.data[v,:,:] = smooth(hdu.data[v,:,:],kern_px=kernel_px)
+        hdu.data[v,:,:] = smooth(hdu.data[v,:,:]/efficiency,kern_px=kernel_px)
     print('Smoothing done for:', data_path)
     
     if write_fits:
@@ -134,7 +134,7 @@ def plot_mom8(path, output_path, prefix_source, prefix_emission, gamma=1.0, vmin
 
     ### Colorbar ###
     cbar = plt.colorbar(im, pad=.01)
-    cbar.set_label(r'$T_{\rm MB}^{\rm \ peak}$', labelpad = 4, y = 0.5, rotation=90, size = 14)
+    cbar.set_label(r'$T_{\rm MB}^{\rm \ peak}$ [K]', labelpad = 4, y = 0.5, rotation=90, size = 12)
     #cbar.ax.tick_params(labelsize=14)
     #cbar.ax.locator_params(nbins=6)
 

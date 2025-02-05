@@ -25,9 +25,11 @@ import scipy
 from module_data_path import cube_data_path, plot_data_path, fits_data_path
 from module_utils import rms, smooth, cube_mom0, cube_mom8, cube_smoothing, plot_mom8
 
-def main():
+stages = [1,2,3,4]
 
-    # data, plots and fits files mainpath
+def stage1():
+
+    # data, plots and fits files directory path
     data_path = cube_data_path()
     fits_path = fits_data_path()
     plots_path = plot_data_path()
@@ -37,13 +39,13 @@ def main():
     data_path_13co = os.path.join(data_path, 'dr21_13co_cube.fits')
     data_path_c18o = os.path.join(data_path, 'dr21_c18o_cube.fits')
 
-    # Prefix
+    # Source prefix
     prefix_source = 'dr21'
     
     # Smoothing (for all emissions)
-    cube_smoothing(data_path=data_path_12co, output_path=fits_path, prefix_source=prefix_source, prefix_emission='12co', kernel_px=1, write_fits=True)
-    cube_smoothing(data_path=data_path_13co, output_path=fits_path, prefix_source=prefix_source, prefix_emission='13co', kernel_px=1, write_fits=True)
-    cube_smoothing(data_path=data_path_c18o, output_path=fits_path, prefix_source=prefix_source, prefix_emission='c18o', kernel_px=1, write_fits=True)
+    cube_smoothing(data_path=data_path_12co, output_path=fits_path, prefix_source=prefix_source, prefix_emission='12co', efficiency=1.0, kernel_px=1, write_fits=True)
+    cube_smoothing(data_path=data_path_13co, output_path=fits_path, prefix_source=prefix_source, prefix_emission='13co', efficiency=1.0, kernel_px=1, write_fits=True)
+    cube_smoothing(data_path=data_path_c18o, output_path=fits_path, prefix_source=prefix_source, prefix_emission='c18o', efficiency=1.0, kernel_px=1, write_fits=True)
 
     # Smoothed cubes path
     data_sm_path_12co = os.path.join(fits_path, f'{prefix_source}_12co_smoothed.fits')
@@ -66,6 +68,9 @@ def main():
     plot_mom8(path=data_mom8_path_c18o, output_path=plots_path, prefix_source=prefix_source, prefix_emission='c18o', gamma=1.0, vmin=0.0, vmax=5.0)
     
 
+
 if __name__ == '__main__':
-    main()
+    
+    if 1 in stages:
+        stage1()
 
