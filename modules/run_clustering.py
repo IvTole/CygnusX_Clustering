@@ -25,8 +25,9 @@ import scipy
 from module_data_path import cube_data_path, plot_data_path, fits_data_path, mask_data_path, catalog_data_path
 from module_utils import rms, smooth, cube_mom0, cube_mom8, cube_smoothing, plot_mom8, plot_mom8_comparison
 from module_clustering import make_clustering, make_catalog, make_plot_clusters, make_mask, catalog_mask_drop
+from module_data_spectra import make_spectra
 
-stages = [3]
+stages = [4]
 
 # cube smoothing
 def stage1():
@@ -131,6 +132,40 @@ def stage3():
     catalog_mask_drop(catalog_path=catalog_path, mask_path=mask_path, drop_list=drop_list, prefix_source=prefix_source, prefix_emission='c18o')
     plot_mom8_comparison(mom_path=data_mom8_path_c18o, plots_path=plots_path, catalog_path=catalog_path, prefix_source=prefix_source, prefix_emission='c18o', dropped=True, gamma=1.0, vmin=0.0, vmax=5.0)
 
+# spectra extraction
+def stage4():
+    
+    # data, plots, fits, catalog and mask files directory path
+    data_path = cube_data_path()
+    fits_path = fits_data_path()
+    plots_path = plot_data_path()
+    mask_path = mask_data_path()
+    catalog_path = catalog_data_path()
+
+
+    # original data cubes
+    data_path_12co = os.path.join(data_path, 'dr21_12co_cube.fits')
+    data_path_13co = os.path.join(data_path, 'dr21_13co_cube.fits')
+    data_path_c18o = os.path.join(data_path, 'dr21_c18o_cube.fits')
+
+    # Source prefix
+    prefix_source = 'dr21'
+
+    # Smoothed cubes path
+    data_sm_path_12co = os.path.join(fits_path, f'{prefix_source}_12co_smoothed.fits')
+    data_sm_path_13co = os.path.join(fits_path, f'{prefix_source}_13co_smoothed.fits')
+    data_sm_path_c18o = os.path.join(fits_path, f'{prefix_source}_c18o_smoothed.fits')
+
+    # Mom8 fits path
+    data_mom8_path_12co = os.path.join(fits_path, f'{prefix_source}_12co_mom8.fits')
+    data_mom8_path_13co = os.path.join(fits_path, f'{prefix_source}_13co_mom8.fits')
+    data_mom8_path_c18o = os.path.join(fits_path, f'{prefix_source}_c18o_mom8.fits')
+
+    make_spectra(cube_path=data_path, catalog_path=catalog_path, mask_path=mask_path, plots_path=plots_path, prefix_source=prefix_source, prefix_emission='c18o', prefix_cube='c18o')
+    #def make_spectra(cube_path, catalog_path, mask_path, prefix_source, prefix_emission, prefix_cube):
+
+
+
 if __name__ == '__main__': 
     
     if 1 in stages:
@@ -139,4 +174,6 @@ if __name__ == '__main__':
         stage2()
     elif 3 in stages:
         stage3()
+    elif 4 in stages:
+        stage4()
 
