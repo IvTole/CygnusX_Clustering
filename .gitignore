@@ -2,5 +2,8 @@
 **/__pycache__
 /fitsfiles/*.fits
 /plots/*.pdf
+/plots/12co_spectra/*.pdf
+/plots/13co_spectra/*.pdf
+/plots/c18o_spectra/*.pdf
 /mask/*.npy
 /catalog/*.csv
