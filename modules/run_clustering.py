@@ -161,8 +161,9 @@ def stage4():
     data_mom8_path_13co = os.path.join(fits_path, f'{prefix_source}_13co_mom8.fits')
     data_mom8_path_c18o = os.path.join(fits_path, f'{prefix_source}_c18o_mom8.fits')
 
+    make_spectra(cube_path=data_path, catalog_path=catalog_path, mask_path=mask_path, plots_path=plots_path, prefix_source=prefix_source, prefix_emission='c18o', prefix_cube='12co')
+    make_spectra(cube_path=data_path, catalog_path=catalog_path, mask_path=mask_path, plots_path=plots_path, prefix_source=prefix_source, prefix_emission='c18o', prefix_cube='13co')
     make_spectra(cube_path=data_path, catalog_path=catalog_path, mask_path=mask_path, plots_path=plots_path, prefix_source=prefix_source, prefix_emission='c18o', prefix_cube='c18o')
-    #def make_spectra(cube_path, catalog_path, mask_path, prefix_source, prefix_emission, prefix_cube):
 
 
 

@@ -31,9 +31,9 @@ from uncertainties import unumpy as unp
 
 def make_spectra(cube_path, catalog_path, mask_path, plots_path, prefix_source, prefix_emission, prefix_cube, efficiency=1.0):
     
-    catalog = pd.read_csv(os.path.join(catalog_path, f"{prefix_source}_catalog_{prefix_emission}.csv"))
+    catalog = pd.read_csv(os.path.join(catalog_path, f"{prefix_source}_catalog_{prefix_emission}_dropped.csv"))
     print(f'Open catalog for {prefix_source}, line = {prefix_emission}')
-    mask = np.load(os.path.join(mask_path, f'{prefix_source}_{prefix_emission}_masks.npy'))
+    mask = np.load(os.path.join(mask_path, f'{prefix_source}_{prefix_emission}_masks_dropped.npy'))
     print(f'Open mask for {prefix_source}, line = {prefix_emission}')
     cube = SpectralCube.read(os.path.join(cube_path, f'{prefix_source}_{prefix_cube}_cube.fits'))
     print(f'Extracting spectra for {prefix_source}, line = {prefix_cube}')
