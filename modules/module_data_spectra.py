@@ -18,6 +18,10 @@ from astropy.io import fits
 from astropy import wcs
 from astropy import units as u
 from astropy.wcs import WCS
+from astropy.io.fits.verify import VerifyWarning
+import warnings
+warnings.simplefilter('ignore', category=VerifyWarning)
+
 
 # Lmfit
 from lmfit.models import GaussianModel
