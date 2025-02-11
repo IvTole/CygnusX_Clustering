@@ -23,11 +23,12 @@ import scipy
 
 # External modules
 from module_data_path import cube_data_path, plot_data_path, fits_data_path, mask_data_path, catalog_data_path
-from module_utils import rms, smooth, cube_mom0, cube_mom8, cube_smoothing, plot_mom8
-from module_clustering import make_clustering, make_catalog, make_plot_clusters, make_mask
+from module_utils import rms, smooth, cube_mom0, cube_mom8, cube_smoothing, plot_mom8, plot_mom8_comparison
+from module_clustering import make_clustering, make_catalog, make_plot_clusters, make_mask, catalog_mask_drop
 
-stages = [2]
+stages = [3]
 
+# cube smoothing
 def stage1():
 
     # data, plots and fits files directory path
@@ -68,6 +69,7 @@ def stage1():
     plot_mom8(path=data_mom8_path_13co, output_path=plots_path, prefix_source=prefix_source, prefix_emission='13co', gamma=1.0, vmin=0.0, vmax=25.0)
     plot_mom8(path=data_mom8_path_c18o, output_path=plots_path, prefix_source=prefix_source, prefix_emission='c18o', gamma=1.0, vmin=0.0, vmax=5.0)
     
+# clustering with astrodendro, extract first cluster catalog and masks    
 def stage2():
 
     # data, plots and fits files directory path
@@ -105,7 +107,29 @@ def stage2():
     make_clustering(cube_path=data_sm_path_c18o, catalog_path=catalog_path, mask_path=mask_path, T_min=T_min, T_delta=T_delta, n_vox=n_vox, prefix_source=prefix_source, prefix_emission='c18o', catalog=True, mask=True)
     
     make_plot_clusters(mom_path=data_mom8_path_c18o, catalog_path=catalog_path, mask_path=mask_path, plots_path=plots_path, prefix_source=prefix_source, prefix_emission='c18o', gamma=1.0, vmin=0.0, vmax=5.0)
-    
+
+# drop bad indexes (by eye) before and after
+def stage3():
+    # fits, plots, catalog and mask files directory path
+    fits_path = fits_data_path()
+    plots_path = plot_data_path()
+    catalog_path = catalog_data_path()
+    mask_path = mask_data_path()
+
+    # Source prefix
+    prefix_source = 'dr21'
+
+    # Mom8 fits path
+    data_mom8_path_12co = os.path.join(fits_path, f'{prefix_source}_12co_mom8.fits')
+    data_mom8_path_13co = os.path.join(fits_path, f'{prefix_source}_13co_mom8.fits')
+    data_mom8_path_c18o = os.path.join(fits_path, f'{prefix_source}_c18o_mom8.fits')
+
+    # Drop list
+    drop_list = [13]
+
+    plot_mom8_comparison(mom_path=data_mom8_path_c18o, plots_path=plots_path, catalog_path=catalog_path, prefix_source=prefix_source, prefix_emission='c18o', dropped=False, gamma=1.0, vmin=0.0, vmax=5.0)
+    catalog_mask_drop(catalog_path=catalog_path, mask_path=mask_path, drop_list=drop_list, prefix_source=prefix_source, prefix_emission='c18o')
+    plot_mom8_comparison(mom_path=data_mom8_path_c18o, plots_path=plots_path, catalog_path=catalog_path, prefix_source=prefix_source, prefix_emission='c18o', dropped=True, gamma=1.0, vmin=0.0, vmax=5.0)
 
 if __name__ == '__main__': 
     
@@ -113,4 +137,6 @@ if __name__ == '__main__':
         stage1()
     elif 2 in stages:
         stage2()
+    elif 3 in stages:
+        stage3()
 

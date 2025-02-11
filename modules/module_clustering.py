@@ -39,7 +39,7 @@ def make_catalog(cube_path, dendrogram, prefix_source, prefix_emission, catalog_
     metadata['beam_minor'] =  46.0 * u.arcsec # FWHM
     metadata['wavelength'] = 0.002730793549 * u.m # c18o wavelength
 
-    cat = ppv_catalog(dendrogram, metadata, verbose=False)
+    cat = ppv_catalog(dendrogram.leaves, metadata, verbose=False) # only leaf structures
     cat_pd = cat.to_pandas()
     cat_pd['major_sigma'] = cat_pd['major_sigma'] / abs(hdu.header['CDELT1'])
     cat_pd['minor_sigma'] = cat_pd['minor_sigma'] / abs(hdu.header['CDELT1'])
@@ -106,7 +106,7 @@ def make_clustering(cube_path, catalog_path, mask_path, T_min, T_delta, n_vox, p
         make_mask(dendrogram=d, prefix_source=prefix_source, prefix_emission=prefix_emission, mask_path=mask_path, write_mask=True)
     #return d
 
-def make_plot_clusters(mom_path, catalog_path, mask_path, plots_path, prefix_source, prefix_emission, save_mask=False, gamma=1.0, vmin=0.0, vmax=45.0):
+def make_plot_clusters(mom_path, catalog_path, mask_path, plots_path, prefix_source, prefix_emission, gamma=1.0, vmin=0.0, vmax=45.0):
     
     hdu = fits.open(mom_path)[0]
     catalog = pd.read_csv(os.path.join(catalog_path, f"{prefix_source}_catalog_{prefix_emission}.csv"))
@@ -176,3 +176,21 @@ def make_plot_clusters(mom_path, catalog_path, mask_path, plots_path, prefix_sou
                 bbox_inches = 'tight')
     print(f'Max intensity with cluster contours for {prefix_source}')
     plt.close()
+
+def catalog_mask_drop(catalog_path, mask_path, drop_list, prefix_source, prefix_emission):
+
+    catalog = pd.read_csv(os.path.join(catalog_path, f"{prefix_source}_catalog_{prefix_emission}.csv"))
+    mask = np.load(os.path.join(mask_path, f'{prefix_source}_{prefix_emission}_masks.npy'))
+    print('len=',len(mask))
+
+    catalog = catalog.drop(drop_list)
+    catalog = catalog.reset_index()
+    catalog.to_csv(os.path.join(catalog_path,f"{prefix_source}_catalog_{prefix_emission}_dropped.csv"),
+                  header = True,
+                  index = False)
+    print(f'Dropped catalog saved for {prefix_source}')
+    
+    drop_index_sorted = sorted(drop_list, reverse=True)
+    mask_dropped = np.delete(mask,drop_index_sorted,axis=0)
+    np.save(os.path.join(mask_path,f'{prefix_source}_{prefix_emission}_masks_dropped.npy'), mask_dropped)
+    print(f'Dropped mask saved for {prefix_source}')
