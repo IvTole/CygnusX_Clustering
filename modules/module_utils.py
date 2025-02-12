@@ -24,6 +24,10 @@ from astropy import units as u
 # Data Cube
 from spectral_cube import SpectralCube
 
+def Gauss_area(H,FWHM):
+        resultado = H * FWHM / (0.3989423 * 2.3548200)
+        return resultado
+
 def rms(image):
     """""
     Returns root mean square error (rms) of an image (2d array).
