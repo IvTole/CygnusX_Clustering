@@ -1,6 +1,6 @@
 # CygnusX_Clustering
 
-We use data from the Nobeyama 45m radiotelescope towards CygnusX region. The objective is to apply a clustering technique (python package astrodendro) to detect c18o in the region.
+We use data from the Nobeyama 45m radiotelescope towards CygnusX region. The objective is to apply a clustering technique (python package astrodendro) to detect c18o clumps in the region.
 
 ## Repository Structure
 ```
@@ -15,3 +15,19 @@ We use data from the Nobeyama 45m radiotelescope towards CygnusX region. The obj
 └── README.md     # Repository documentation
 
 ```
+
+## Conda environment setup
+
+Inside directory **environment/** there is a file named **environment.yml**. This file is used to set up a dedicated Conda environment with all the necessary dependencies for running the code in this repository.
+
+To create the environment, first ensure you have **Anaconda** or **Miniconda** installed on your system. You can download it from [Anaconda's official website](https://www.anaconda.com/download). Then, open a terminal and run the following command:
+
+`conda env create -f environment.yml`
+
+```bash
+conda env create -f environment/environment.yml
+```
+
+
+
+
