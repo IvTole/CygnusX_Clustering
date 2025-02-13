@@ -56,7 +56,7 @@ def make_spectra(cube_path, catalog_path, mask_path, plots_path, prefix_source, 
     
         print(f'clump_idx = {clump_index}')
 
-        x_p, y_p, n_vox = spectra_extraction(cube=cube, mask=mask[index], efficiency=efficiency)
+        x_p, y_p, n_sky = spectra_extraction(cube=cube, mask=mask[index], efficiency=efficiency)
 
         # Gaussian Fit
         # find peaks in emission
@@ -75,7 +75,7 @@ def make_spectra(cube_path, catalog_path, mask_path, plots_path, prefix_source, 
 
         gaussian_result = gaussian_fit(*gaussian_params,ngaus=ngaus,x=x_p,y=y_p)
 
-        df_params = export_lmfit_results(result=gaussian_result, id=clump_index, n_vox=n_vox)
+        df_params = export_lmfit_results(result=gaussian_result, id=clump_index, n_sky=n_sky)
         dfs.append(df_params)
 
         # Gaussian Fit
@@ -124,7 +124,6 @@ def make_spectra(cube_path, catalog_path, mask_path, plots_path, prefix_source, 
     df_params_concat.to_csv(os.path.join(catalog_path,f'{prefix_source}_{prefix_cube}_fit_params.csv'),
                             header = True,
                             index = False)
-
 
 def spectra_extraction(cube, mask, efficiency):
 
@@ -206,7 +205,7 @@ def gaussian_fit(*args,ngaus,x,y):
 
     return result
 
-def export_lmfit_results(result, id, n_vox):
+def export_lmfit_results(result, id, n_sky):
     """
     Extracts Gaussian fit parameters from an lmfit result object and exports them to a CSV file.
 
@@ -227,7 +226,7 @@ def export_lmfit_results(result, id, n_vox):
         fit_data.append({
             "Clump_id":id,
             "Gaussian": i + 1,
-            "N_vox": n_vox,
+            "N_sky": n_sky,
             "Amplitude": result.params[f"{g_prefix}_amplitude"].value,
             "Amplitude_err": result.params[f"{g_prefix}_amplitude"].stderr,
             "Center": result.params[f"{g_prefix}_center"].value,

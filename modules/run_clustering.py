@@ -3,6 +3,8 @@
 # Standard
 import numpy as np
 import matplotlib.pyplot as plt
+import math
+import scipy
 import os
 
 # Matplotlib figures to annotate
@@ -18,16 +20,18 @@ from astropy import units as u
 # Spectral cubes
 from spectral_cube import SpectralCube
 
-import math
-import scipy
+# uncertainties
+from uncertainties import ufloat
+from uncertainties import unumpy as unp
 
 # External modules
 from module_data_path import cube_data_path, plot_data_path, fits_data_path, mask_data_path, catalog_data_path
 from module_utils import rms, smooth, cube_mom0, cube_mom8, cube_smoothing, plot_mom8, plot_mom8_comparison
 from module_clustering import make_clustering, make_catalog, make_plot_clusters, make_mask, catalog_mask_drop
 from module_data_spectra import make_spectra
+from module_analysis import make_analysis
 
-stages = [4]
+stages = [5]
 
 # cube smoothing
 def stage1():
@@ -168,7 +172,21 @@ def stage4():
     make_spectra(cube_path=data_path, catalog_path=catalog_path, mask_path=mask_path, plots_path=plots_path,
                  prefix_source=prefix_source, prefix_emission='c18o', prefix_cube='c18o', efficiency=1.0, height=0.75, distance=5)
 
+# physical parameters
+def stage5():
+    
+    # data, plots, fits, catalog and mask files directory path
+    data_path = cube_data_path()
+    fits_path = fits_data_path()
+    plots_path = plot_data_path()
+    mask_path = mask_data_path()
+    catalog_path = catalog_data_path()
 
+    prefix_source = 'dr21'    
+
+    source_distance = ufloat(1400, 0) # distance in pc to CygnusX and uncertainty
+
+    make_analysis(cube_path=data_path, catalog_path=catalog_path, mask_path=mask_path, prefix_source=prefix_source, prefix_emission='c18o', prefix_cube='c18o', source_distance=source_distance)
 
 if __name__ == '__main__': 
     
@@ -180,4 +198,6 @@ if __name__ == '__main__':
         stage3()
     elif 4 in stages:
         stage4()
+    elif 5 in stages:
+        stage5()
 
