@@ -176,7 +176,7 @@ def spectra_extraction(cube, mask, efficiency):
 
                     count_npix += 1
 
-    print(f'n_vox = {count_npix}')
+    print(f'n_sky = {count_npix}')
 
     y_p = [((1/count_npix)*ys/efficiency) for ys in y] # corrected for mb
     x_p = [value / 1000 for value in x] # in km/s

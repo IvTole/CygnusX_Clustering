@@ -97,7 +97,7 @@ def make_clustering(cube_path, catalog_path, mask_path, T_min, T_delta, n_vox, p
     count = 0
     for leaf in d.leaves:
         count += 1
-    print('# of leaves (clumps) identified = ', count)
+    print('# of leaves (clusters) identified = ', count)
 
     if catalog:
         make_catalog(cube_path=cube_path, dendrogram=d, prefix_source=prefix_source, prefix_emission=prefix_emission, catalog_path=catalog_path, write_catalog=True)

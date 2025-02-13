@@ -31,7 +31,7 @@ from module_clustering import make_clustering, make_catalog, make_plot_clusters,
 from module_data_spectra import make_spectra
 from module_analysis import make_analysis
 
-stages = [5]
+stages = [1]
 
 # cube smoothing
 def stage1():
