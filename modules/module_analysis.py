@@ -100,7 +100,7 @@ def make_analysis(cube_path, catalog_path, mask_path, prefix_source, prefix_emis
     mask = np.load(os.path.join(mask_path, f'{prefix_source}_{prefix_emission}_masks_dropped.npy'))
     print(f'Open mask for {prefix_source}, line = {prefix_emission}')
 
-    cols = ['l','b','Cen_c18o','FWHM_c18o','Height_c18o','Height_12co','I_c18o','R_cl','T_ex','M_LTE','n_H2','M_vir']
+    cols = ['Id','l','b','Cen_c18o','FWHM_c18o','Height_c18o','Height_12co','I_c18o','R_cl','T_ex','M_LTE','n_H2','M_vir']
     phys_params_dict = {col: [] for col in cols} # initialize dictionary
 
     clump_indexes = sorted(cat_fit_18['Clump_id'].unique())
@@ -119,10 +119,13 @@ def make_analysis(cube_path, catalog_path, mask_path, prefix_source, prefix_emis
 
         theta_pix = abs(pix_incr_lat) * 0.0174533 # pixel physical size in (deg -> rad)
 
+        # Id
+        phys_params_dict['Id'].append(index)
+
         # Position
-        value = round(cat_cl_sub_18['x_cen'].iloc[0]*pix_incr_lon + min_lon, 4)
+        value = round(cat_cl_sub_18['x_cen'].iloc[0] * pix_incr_lon + min_lon, 4)
         phys_params_dict['l'].append(value)
-        value = round(cat_cl_sub_18['y_cen'].iloc[0]*pix_incr_lat + min_lat, 4)
+        value = round(cat_cl_sub_18['y_cen'].iloc[0] * pix_incr_lat + min_lat, 4)
         phys_params_dict['b'].append(value)
 
         # Velocity
