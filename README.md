@@ -1,6 +1,6 @@
 # CygnusX_Clustering
 
-We use data from the Nobeyama 45m radiotelescope towards CygnusX region. The objective is to apply a clustering technique (python package astrodendro) to detect c18o clumps in the region.
+We use data from the Nobeyama 45m radiotelescope towards CygnusX star forming region. The objective is to apply a clustering technique (python package astrodendro) to detect c18o clumps in the region.
 
 ## Repository Structure
 ```
