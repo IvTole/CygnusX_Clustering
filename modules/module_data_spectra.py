@@ -243,3 +243,121 @@ def export_lmfit_results(result, id, n_sky):
     df_params = pd.DataFrame(fit_data)
 
     return df_params
+
+def plot_all_spectra(cube_path, mask_path, plots_path, prefix_source, prefix_emission):
+    '''
+    Assuming we have all 12co, 13co and c18o emissions.
+    '''
+
+    prefix_cube = '12co'
+    cube_12 = SpectralCube.read(os.path.join(cube_path, f'{prefix_source}_{prefix_cube}_cube.fits'))
+    prefix_cube = '13co'
+    cube_13 = SpectralCube.read(os.path.join(cube_path, f'{prefix_source}_{prefix_cube}_cube.fits'))
+    prefix_cube = 'c18o'
+    cube_18 = SpectralCube.read(os.path.join(cube_path, f'{prefix_source}_{prefix_cube}_cube.fits'))
+
+    mask = np.load(os.path.join(mask_path, f'{prefix_source}_{prefix_emission}_masks_dropped.npy'))
+    print(f'Open mask for {prefix_source}, line = {prefix_emission}')
+
+    print(f'Extracting spectra for all')
+    # Extraction (by index)
+    clump_index = 0
+    fig_all = plt.figure(figsize=(15,15))     # initialize fig for plot with all spectra
+    for index in range(0,len(mask)):
+        efficiency_12 = 1.0
+        height_12 = 4.0
+        distance_12 = 15.0
+        scale_12 = 7.5
+        efficiency_13 = 1.0
+        height_13 = 2.0
+        distance_13 = 15.0
+        scale_13 = 5.0
+        efficiency_18 = 1.0
+        height_18 = 0.75
+        distance_18 = 5.0
+        print(f'clump_idx = {clump_index}')
+
+        x_p, y_p, n_sky = spectra_extraction(cube=cube_12, mask=mask[index], efficiency=efficiency_12)
+
+        # Gaussian Fit
+        # find peaks in emission
+        peaks, _ = find_peaks(y_p, height=height_12, distance=distance_12)
+        ngaus = len(peaks)
+        print(f'ngaus={ngaus}')
+
+        # initial parameters using peak and index
+        gaussian_params = []
+        for i, peak in enumerate(peaks):
+            amp = y_p[peak]  # Peak height as amplitude
+            cen = x_p[peak]  # Peak position as center
+            wid = 1  # Initial guess for width (adjustable)
+            gaussian_params.extend([amp, cen, wid])
+        gaussian_params = tuple(gaussian_params)
+
+        gaussian_result = gaussian_fit(*gaussian_params,ngaus=ngaus,x=x_p,y=y_p)
+
+        ax = fig_all.add_subplot(int(len(mask)/3)+1,3,clump_index+1)
+        ax.set_xlim(-45,45)
+        ax.set_ylim(-1.5,max(np.array(y_p)/scale_12) + 0.5)
+        ax.set_ylabel(' ')
+        ax.set_xlabel(' ')
+        ax.plot(x_p,np.array(y_p)/scale_12,drawstyle='steps-mid', c='gray', label = f'Cl_{clump_index}_12co / ' + str(scale_12))
+        ax.plot(x_p, gaussian_result.best_fit/scale_12, c='g', linestyle='dashed')
+        ax.legend(loc='upper left', fontsize=6)
+
+        x_p, y_p, n_sky = spectra_extraction(cube=cube_13, mask=mask[index], efficiency=efficiency_13)
+
+        # Gaussian Fit
+        # find peaks in emission
+        peaks, _ = find_peaks(y_p, height=height_13, distance=distance_13)
+        ngaus = len(peaks)
+        print(f'ngaus={ngaus}')
+
+        # initial parameters using peak and index
+        gaussian_params = []
+        for i, peak in enumerate(peaks):
+            amp = y_p[peak]  # Peak height as amplitude
+            cen = x_p[peak]  # Peak position as center
+            wid = 1  # Initial guess for width (adjustable)
+            gaussian_params.extend([amp, cen, wid])
+        gaussian_params = tuple(gaussian_params)
+
+        gaussian_result = gaussian_fit(*gaussian_params,ngaus=ngaus,x=x_p,y=y_p)
+
+        ax.plot(x_p,np.array(y_p)/scale_13,drawstyle='steps-mid', c='darkgray', label = f'Cl_{clump_index}_13co / ' + str(scale_13))
+        ax.plot(x_p, gaussian_result.best_fit/scale_13, c='b', linestyle='dashed')
+        ax.legend(loc='upper left', fontsize=6)
+
+        x_p, y_p, n_sky = spectra_extraction(cube=cube_18, mask=mask[index], efficiency=efficiency_18)
+
+        # Gaussian Fit
+        # find peaks in emission
+        peaks, _ = find_peaks(y_p, height=height_18, distance=distance_18)
+        ngaus = len(peaks)
+        print(f'ngaus={ngaus}')
+
+        # initial parameters using peak and index
+        gaussian_params = []
+        for i, peak in enumerate(peaks):
+            amp = y_p[peak]  # Peak height as amplitude
+            cen = x_p[peak]  # Peak position as center
+            wid = 1  # Initial guess for width (adjustable)
+            gaussian_params.extend([amp, cen, wid])
+        gaussian_params = tuple(gaussian_params)
+
+        gaussian_result = gaussian_fit(*gaussian_params,ngaus=ngaus,x=x_p,y=y_p)
+
+        ax.plot(x_p,y_p,drawstyle='steps-mid', c='black', label = f'Cl_{clump_index}_c18o')
+        ax.plot(x_p, gaussian_result.best_fit, c='r', linestyle='dashed')
+        ax.legend(loc='upper left', fontsize=6)
+
+        clump_index += 1
+
+    fig_all.text(0.5, 0.08, r'V$_{\rm LSR}$[km s$^{-1}$]', ha='center', size = 20)
+    fig_all.text(0.08, 0.5, r'T$_{\rm MB}$ [K]', va='center', rotation='vertical', size=20)
+    
+    fig_all.savefig(os.path.join(plots_path, f'{prefix_source}_spectra_all.pdf'),
+                bbox_inches = 'tight')
+    print(f'Saving figure for all spectra of all emissions for {prefix_source}')
+    plt.close(fig_all)
+

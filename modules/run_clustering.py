@@ -28,12 +28,12 @@ from uncertainties import unumpy as unp
 from module_data_path import cube_data_path, plot_data_path, fits_data_path, mask_data_path, catalog_data_path
 from module_utils import rms, smooth, cube_mom0, cube_mom8, cube_smoothing, plot_mom8, plot_mom8_comparison
 from module_clustering import make_clustering, make_catalog, make_plot_clusters, make_mask, catalog_mask_drop
-from module_data_spectra import make_spectra
+from module_data_spectra import make_spectra, plot_all_spectra
 from module_analysis import make_analysis
 
-stages = [1]
+stages = [4]
 
-# cube smoothing
+# cube smoothing and edges mask
 def stage1():
 
     # data, plots and fits files directory path
@@ -165,12 +165,14 @@ def stage4():
     data_mom8_path_13co = os.path.join(fits_path, f'{prefix_source}_13co_mom8.fits')
     data_mom8_path_c18o = os.path.join(fits_path, f'{prefix_source}_c18o_mom8.fits')
 
-    make_spectra(cube_path=data_path, catalog_path=catalog_path, mask_path=mask_path, plots_path=plots_path,
-                 prefix_source=prefix_source,prefix_emission='c18o', prefix_cube='12co', efficiency=1.0, height=4.0, distance=15)
-    make_spectra(cube_path=data_path, catalog_path=catalog_path, mask_path=mask_path, plots_path=plots_path,
-                 prefix_source=prefix_source, prefix_emission='c18o', prefix_cube='13co', efficiency=1.0, height=2.0, distance=15)
-    make_spectra(cube_path=data_path, catalog_path=catalog_path, mask_path=mask_path, plots_path=plots_path,
-                 prefix_source=prefix_source, prefix_emission='c18o', prefix_cube='c18o', efficiency=1.0, height=0.75, distance=5)
+    #make_spectra(cube_path=data_path, catalog_path=catalog_path, mask_path=mask_path, plots_path=plots_path,
+    #             prefix_source=prefix_source,prefix_emission='c18o', prefix_cube='12co', efficiency=1.0, height=4.0, distance=15)
+    #make_spectra(cube_path=data_path, catalog_path=catalog_path, mask_path=mask_path, plots_path=plots_path,
+    #             prefix_source=prefix_source, prefix_emission='c18o', prefix_cube='13co', efficiency=1.0, height=2.0, distance=15)
+    #make_spectra(cube_path=data_path, catalog_path=catalog_path, mask_path=mask_path, plots_path=plots_path,
+    #             prefix_source=prefix_source, prefix_emission='c18o', prefix_cube='c18o', efficiency=1.0, height=0.75, distance=5)
+    
+    plot_all_spectra(cube_path=data_path, mask_path=mask_path, plots_path=plots_path, prefix_source=prefix_source, prefix_emission='c18o')
 
 # physical parameters
 def stage5():
